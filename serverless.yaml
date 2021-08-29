@@ -34,9 +34,9 @@ functions:
           Action:
             - "dynamodb:Scan"
           Resource: !GetAtt LeadsTable.Arn
-  createLead:
-    handler: api.createLead
-    name: create-lead
+  createOneLead:
+    handler: api.createOneLead
+    name: create-one-lead
     memorySize: 128 # mb
     timeout: 5 # seconds
     events:
