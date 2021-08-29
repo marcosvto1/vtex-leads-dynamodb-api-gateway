@@ -12,6 +12,8 @@ provider:
        Action:
          - "dynamodb:Scan"
          - "dynamodb:PutItem"
+         - "dynamodb:UpdateItem"
+         - "dynamodb:GetItem"
        Resource: "arn:aws:dynamodb:us-east-2:615656947034:table/leads-table-dev"
 
 custom:
@@ -48,6 +50,51 @@ functions:
       - Effect: "Allow"
         Action:
           - "dynamodb:PutItem"
+        Resource: !GetAtt LeadsTable.Arn
+
+  updateOneLead:
+    handler: api.updateOneLead
+    name: update-one-lead
+    memorySize: 128 # mb
+    timeout: 5 # seconds
+    events:
+      - http:
+          path: leads/{leadId}
+          method: PUT
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:UpdateItem"
+        Resource: !GetAtt LeadsTable.Arn
+
+  getOneLead:
+    handler: api.getOneLead
+    name: get-one-lead
+    memorySize: 128
+    timeout: 5
+    events:
+      - http:
+          path: leads/{leadId}
+          method: GET
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:GetItem"
+        Resource: !GetAtt LeadsTable.Arn
+
+  getOneLeadByEmail:
+    handler: api.getOneLeadByEmail
+    name: get-one-lead-by-email
+    memorySize: 128
+    timeout: 5
+    events:
+      - http:
+          path: leads/email/{email}
+          method: GET
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:GetItem"
         Resource: !GetAtt LeadsTable.Arn
 
 resources:

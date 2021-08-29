@@ -9,6 +9,64 @@ const {
 } = require("@aws-sdk/client-dynamodb");
 const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
 
+const getOneLead = async (event) => {
+  const response = { statusCode: 200 };
+
+  try {
+      const params = {
+          TableName: process.env.DYNAMODB_TABLE_NAME,
+          Key: marshall({ leadId: event.pathParameters.leadId }),
+      };
+      const { Item } = await db.send(new GetItemCommand(params));
+
+      console.log({ Item });
+      response.body = JSON.stringify({
+          message: "Successfully retrieved lead.",
+          data: (Item) ? unmarshall(Item) : {},
+          rawData: Item,
+      });
+  } catch (e) {
+      console.error(e);
+      response.statusCode = 500;
+      response.body = JSON.stringify({
+          message: "Failed to get lead.",
+          errorMsg: e.message,
+          errorStack: e.stack,
+      });
+  }
+
+  return response;
+}
+
+const getOneLeadByEmail = async (event) => {
+  const response = { statusCode: 200 };
+
+  try {
+      const params = {
+          TableName: process.env.DYNAMODB_TABLE_NAME,
+          Key: marshall({ email: event.pathParameters.email }),
+      };
+      const { Item } = await db.send(new GetItemCommand(params));
+
+      console.log({ Item });
+      response.body = JSON.stringify({
+          message: "Successfully retrieved lead.",
+          data: (Item) ? unmarshall(Item) : {},
+          rawData: Item,
+      });
+  } catch (e) {
+      console.error(e);
+      response.statusCode = 500;
+      response.body = JSON.stringify({
+          message: "Failed to get lead.",
+          errorMsg: e.message,
+          errorStack: e.stack,
+      });
+  }
+
+  return response;
+}
+
 const getAllLeads = async () => {
   const response = { statusCode: 200 };
 
@@ -33,8 +91,6 @@ const getAllLeads = async () => {
   return response;
 };
 
-
-
 const createOneLead = async (event) => {
   const response = { statusCode: 200 };
 
@@ -54,14 +110,14 @@ const createOneLead = async (event) => {
       const createResult = await db.send(new PutItemCommand(params));
 
       response.body = JSON.stringify({
-          message: "Successfully created post.",
+          message: "Successfully created lead.",
           createResult,
       });
   } catch (e) {
       console.error(e);
       response.statusCode = 500;
       response.body = JSON.stringify({
-          message: "Failed to create post.",
+          message: "Failed to create lead.",
           errorMsg: e.message,
           errorStack: e.stack,
       });
@@ -70,8 +126,48 @@ const createOneLead = async (event) => {
   return response;
 };
 
+const updateOneLead = async (event) => {
+  const response = { statusCode: 200 };
+
+  try {
+      const body = JSON.parse(event.body);
+      const objKeys = Object.keys(body);
+      const params = {
+          TableName: process.env.DYNAMODB_TABLE_NAME,
+          Key: marshall({ postId: event.pathParameters.leadId }),
+          UpdateExpression: `SET ${objKeys.map((_, index) => `#key${index} = :value${index}`).join(", ")}`,
+          ExpressionAttributeNames: objKeys.reduce((acc, key, index) => ({
+              ...acc,
+              [`#key${index}`]: key,
+          }), {}),
+          ExpressionAttributeValues: marshall(objKeys.reduce((acc, key, index) => ({
+              ...acc,
+              [`:value${index}`]: body[key],
+          }), {})),
+      };
+      const updateResult = await db.send(new UpdateItemCommand(params));
+
+      response.body = JSON.stringify({
+          message: "Successfully updated lead.",
+          updateResult,
+      });
+  } catch (e) {
+      console.error(e);
+      response.statusCode = 500;
+      response.body = JSON.stringify({
+          message: "Failed to update lead.",
+          errorMsg: e.message,
+          errorStack: e.stack,
+      });
+  }
+
+  return response;
+};
 
 module.exports = {
+  getOneLead,
+  getOneLeadByEmail,
   getAllLeads,
-  createOneLead
+  createOneLead,
+  updateOneLead
 }
