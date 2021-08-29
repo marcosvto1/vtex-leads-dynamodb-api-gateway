@@ -7,6 +7,11 @@ provider:
   region: us-east-2
   environment:
     DYNAMODB_TABLE_NAME: ${self:custom.leadsTableName}
+  iamRoleStatements:
+    -  Effect: "Allow"
+       Action:
+         - "dynamodb:Scan"
+       Resource: "arn:aws:dynamodb:us-east-2:615656947034:table/leads-table-dev"
 
 custom:
   leadsTableName: leads-table-${self:provider.stage}
