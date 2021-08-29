@@ -14,20 +14,21 @@ custom:
 plugin:
   - serverless-iam-roles-per-function
 
-getAllLeads:
-    handler: api.getAllLeads
-    name: get-all-leads
-    memorySize: 128 # mb
-    timeout: 5 # seconds
-    events:
-      - http:
-          path: leads
-          method: GET
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
-          - "dynamodb:Scan"
-        Resource: !GetAtt LeadsTable.Arn
+functions:
+  getAllLeads:
+      handler: api.getAllLeads
+      name: get-all-leads
+      memorySize: 128 # mb
+      timeout: 5 # seconds
+      events:
+        - http:
+            path: leads
+            method: GET
+      iamRoleStatements:
+        - Effect: "Allow"
+          Action:
+            - "dynamodb:Scan"
+          Resource: !GetAtt LeadsTable.Arn
 
 resources:
   Resources:
