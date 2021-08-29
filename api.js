@@ -33,40 +33,42 @@ const getAllLeads = async () => {
   return response;
 };
 
+
+
 const createOneLead = async (event) => {
-  const response = { statusCode : 200 };
+  const response = { statusCode: 200 };
 
   try {
-    const body = JSON.parse(event.body);
+      const body = JSON.parse(event.body);
 
-    const leadNew = {
-      ...body,
-      leadId: uuid.v4(),
-      type: 'prospect',
-      prospectAt: new Date().toString()
-    }
+      const newLead = {
+        ...body,
+        leadId: uuid.v4()
+      }
+      console.log(newLead);
 
-    const params = {
-      TableName: process.env.DYNAMODB_TABLE_NAME,
-      Item: marshall(leadNew || {}),
-    };
+      const params = {
+          TableName: process.env.DYNAMODB_TABLE_NAME,
+          Item: marshall(newLead || {}),
+      };
+      const createResult = await db.send(new PutItemCommand(params));
 
-    const createResult = await db.send(new PutItemCommand(params));
-
-    response.body = JSON.stringify({
-      message: 'Succesfully created lead',
-      createResult
-    })
+      response.body = JSON.stringify({
+          message: "Successfully created post.",
+          createResult,
+      });
   } catch (e) {
-    console.error(e);
-    response.statusCode = 500;
-    response.body = JSON.stringify({
-        message: "Failed to create post.",
-        errorMsg: e.message,
-        errorStack: e.stack,
-    });   
+      console.error(e);
+      response.statusCode = 500;
+      response.body = JSON.stringify({
+          message: "Failed to create post.",
+          errorMsg: e.message,
+          errorStack: e.stack,
+      });
   }
-}
+  console.log(response)
+  return response;
+};
 
 
 module.exports = {
