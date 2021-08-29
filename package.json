@@ -1,0 +1,23 @@
+{
+  "name": "vtex-leads-dynamodb-api-gateway",
+  "version": "1.0.0",
+  "description": "Lamda Leads",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcosvto1/vtex-leads-dynamodb-api-gateway.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marcosvto1/vtex-leads-dynamodb-api-gateway/issues"
+  },
+  "homepage": "https://github.com/marcosvto1/vtex-leads-dynamodb-api-gateway#readme",
+  "dependencies": {
+    "aws-sdk": "^2.978.0"
+  }
+}
