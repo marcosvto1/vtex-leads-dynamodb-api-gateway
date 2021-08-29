@@ -51,7 +51,7 @@ resources:
           - AttributeName: clientAt
             AttributeType: S
         KeySchema:
-          - AttributeName: postId
+          - AttributeName: leadId
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
