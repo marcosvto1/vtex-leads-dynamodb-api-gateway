@@ -34,14 +34,14 @@ functions:
           Action:
             - "dynamodb:Scan"
           Resource: !GetAtt LeadsTable.Arn
-  createPost:
+  createLead:
     handler: api.createLead
     name: create-lead
     memorySize: 128 # mb
     timeout: 5 # seconds
     events:
       - http:
-          path: post
+          path: leads
           method: POST
     iamRoleStatements:
       - Effect: "Allow"
