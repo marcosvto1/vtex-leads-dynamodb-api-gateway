@@ -11,6 +11,7 @@ provider:
     -  Effect: "Allow"
        Action:
          - "dynamodb:Scan"
+         - "dynamodb:PutItem"
        Resource: "arn:aws:dynamodb:us-east-2:615656947034:table/leads-table-dev"
 
 custom:
