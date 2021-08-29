@@ -32,6 +32,30 @@ const getAllLeads = async () => {
   return response;
 };
 
+const createLead = async (event) => {
+  const response = { statusCode : 200 };
+
+  try {
+
+  } catch (e) {
+    console.log(e);
+    const body = JSON.parse(event.body);
+    const params = {
+      TableName: process.env.DYNAMODB_TABLE_NAME,
+      Item: marshall(body || {}),
+    };
+
+    const createResult = await db.send(new PutItemCommand(params));
+
+    response.body = JSON.stringify({
+      message: 'Succesfully created lead',
+      createResult
+    })
+  }
+}
+
+
 module.exports = {
-  getAllLeads
+  getAllLeads,
+  createLead
 }
