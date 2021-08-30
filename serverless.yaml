@@ -14,6 +14,7 @@ provider:
          - "dynamodb:PutItem"
          - "dynamodb:UpdateItem"
          - "dynamodb:GetItem"
+         - "dynamodb:DeleteItem"
        Resource: "arn:aws:dynamodb:us-east-2:615656947034:table/leads-table-dev"
 
 custom:
@@ -95,6 +96,21 @@ functions:
       - Effect: "Allow"
         Action:
           - "dynamodb:GetItem"
+        Resource: !GetAtt LeadsTable.Arn
+
+  deleteOneLead:
+    handler: api.deleteOneLead
+    name: delete-one-post
+    memorySize: 128 # mb
+    timeout: 5 # seconds
+    events:
+      - http:
+          path: leads/{leadId}
+          method: DELETE
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:DeleteItem"
         Resource: !GetAtt LeadsTable.Arn
 
 resources:

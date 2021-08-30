@@ -164,10 +164,38 @@ const updateOneLead = async (event) => {
   return response;
 };
 
+const deleteOneLead = async (event) => {
+  const response = { statusCode: 200 };
+
+  try {
+      const params = {
+          TableName: process.env.DYNAMODB_TABLE_NAME,
+          Key: marshall({ leadId: event.pathParameters.leadId }),
+      };
+      const deleteResult = await db.send(new DeleteItemCommand(params));
+
+      response.body = JSON.stringify({
+          message: "Successfully deleted lead.",
+          deleteResult,
+      });
+  } catch (e) {
+      console.error(e);
+      response.statusCode = 500;
+      response.body = JSON.stringify({
+          message: "Failed to delete lead.",
+          errorMsg: e.message,
+          errorStack: e.stack,
+      });
+  }
+
+  return response;
+};
+
 module.exports = {
   getOneLead,
   getOneLeadByEmail,
   getAllLeads,
   createOneLead,
-  updateOneLead
+  updateOneLead,
+  deleteOneLead
 }
