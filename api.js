@@ -134,7 +134,7 @@ const updateOneLead = async (event) => {
       const objKeys = Object.keys(body);
       const params = {
           TableName: process.env.DYNAMODB_TABLE_NAME,
-          Key: marshall({ postId: event.pathParameters.leadId }),
+          Key: marshall({ leadId: event.pathParameters.leadId }),
           UpdateExpression: `SET ${objKeys.map((_, index) => `#key${index} = :value${index}`).join(", ")}`,
           ExpressionAttributeNames: objKeys.reduce((acc, key, index) => ({
               ...acc,
